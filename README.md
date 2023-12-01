@@ -103,17 +103,17 @@ To extend this lab, you will need to add the following:
 - (3 marks) Add an icon to the appBar that enables a user to import a .csv file from local files to populate the list of grades. The csv file should have 2 columns (sid, grade) and append all new grades to the existing list of grades.
 
 - (4 marks) Add two more features of your choice other than those listed here. Mention these features explicitly in your README.md.
-- choice 1: Add a button to the appBar that allows users to export the list of grades to a .csv file (to the device).
-- choice 2: Add a button to the appBar that allows users to search for a specific grade by sid.
+- choice feature-1: Add a button to the appBar that allows users to export the list of grades to a .csv file (to the device).
+- choice feature-2: Add a button to the appBar that allows users to search for a specific grade by sid.
 
   - As a baseline, each of these features should be at least as complex as being able to store all the grades in an SQLite database, export the contents of that database to a file, and import files of that type to generate a list of grades.
 ## How to Use the App and check I have finished the extension
 1. Clone the repository or download the source code and use Android Studio to open it.
 2. Run 'flutter pub get' in the terminal to get all the dependencies.
-3. Use the Left bottom `"+" button` to add some data (features that include by Lab 05/06). Or use the `upload button` on the appBar to import a test.csv files to populate the list of grades (feature on extension part).
+3. Use the Left bottom `"+" button` to add some data (features that include by Lab 05/06). Or use the `upload button` on the appBar to import a .csv files (from your device) to populate the list of grades (feature on extension part) (The list_grades.dart file also has the commented out _importCsv method for importing .csv files via assets. If you are using a virtual appliance and cannot import .csv files from the appliance, please comment out the currently used _importCsv method code and make the above code available.).
 4. Use the `search box and button below the appBar` to search for a specific grade by sid (feature on extension part). Use reset button to reset the list.
 5. Use the `three dot button (PopupMenu button)` on the appBar to sort the grades in one of four ways (increasing/decreasing sid/grade) (feature on extension part).
 6. Use `swiping gesture` to delete some grades (best from right to left) (feature on extension part).
 7. Use `long press gesture` to go the edit page (the page is included by Lab 05/06) and edit some grades (feature on extension part).
 8. Use the `chart button` on the appBar to show a `DataTable`, which generates a vertical bar chart of the grade data. The Y axis should be frequency, and the X axis should be the grade in ascending order (feature on extension part).
-9. Use the `save button` on the appBar to export the list of grades to a .csv file (to the device you using) (if success then there will have a snackbar to tell) (feature on extension part).
+9. Use the `save button` on the appBar to export the list of grades to a .csv file (to your device) (Hint: path for real device: /data/com.example.lab_extension/grades_export.csv; path for emulator: /data/data/com.example.lab_extension/app_flutter/grades_export.csv) (if success then there will have a snackbar to tell) (feature on extension part).

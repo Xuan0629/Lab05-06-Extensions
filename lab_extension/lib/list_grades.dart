@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:csv/csv.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'grades_model.dart';
 import 'grade.dart';
@@ -123,38 +125,85 @@ class _ListGradesState extends State<ListGrades> {
     });
   }
 
-  void _importCsv() async {
-    final csvData = await rootBundle.loadString('lib/test.csv');
-    List<List<dynamic>> rowsAsListOfValues = const CsvToListConverter().convert(csvData);
+  // import .csv file from assets
+  // void _importCsv() async {
+  //   final csvData = await rootBundle.loadString('lib/test.csv');
+  //   List<List<dynamic>> rowsAsListOfValues = const CsvToListConverter().convert(csvData);
+  //
+  //   for (final row in rowsAsListOfValues) {
+  //     if (row[0] == 'sid') {
+  //       continue;
+  //     }
+  //     final grade = Grade(
+  //       sid: row[0].toString(),
+  //       grade: row[1].toString(),
+  //     );
+  //     await GradesModel.instance.insertGrade(grade);
+  //   }
+  //   _getGrades(); // Refresh the list after importing
+  // }
 
-    for (final row in rowsAsListOfValues) {
-      if (row[0] == 'sid') {
-        continue;
+  // import .csv file from device
+  void _importCsv() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['csv'],
+    );
+
+    if (result != null) {
+      String? filePath = result.files.single.path;
+      if (filePath != null) {
+        final csvData = await File(filePath).readAsString();
+        List<List<dynamic>> rowsAsListOfValues = const CsvToListConverter().convert(csvData);
+
+        for (final row in rowsAsListOfValues) {
+          if (row[0] == 'sid') continue; // Assuming first row is header
+          final grade = Grade(
+            sid: row[0].toString(),
+            grade: row[1].toString(),
+          );
+          await GradesModel.instance.insertGrade(grade);
+        }
+        _getGrades(); // Refresh the list after importing
       }
-      final grade = Grade(
-        sid: row[0].toString(),
-        grade: row[1].toString(),
-      );
-      await GradesModel.instance.insertGrade(grade);
     }
-    _getGrades(); // Refresh the list after importing
   }
 
   void _exportGradesToCsv() async {
+    // Request permissions for storage
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      await Permission.storage.request();
+    }
+
     List<List<String>> csvData = [
-      ['sid', 'grade'],
+      ['Student ID', 'Grade'],
       ...testGrades.map((grade) => [grade.sid, grade.grade]),
     ];
+
     String csvString = const ListToCsvConverter().convert(csvData);
 
-    final directory = await getApplicationDocumentsDirectory(); // Correct path
-    final path = '${directory.path}/grades_export.csv';
-    final file = File(path);
+    String path;
+    if (!kIsWeb && Platform.isAndroid) {
+      // Android specific code to get the Downloads directory
+      Directory? downloadsDirectory = await getExternalStorageDirectory();
+      String downloadsPath = downloadsDirectory?.path ?? (await getApplicationDocumentsDirectory()).path;
+      path = '$downloadsPath/grades_export.csv';
+    } else {
+      // iOS and other platforms
+      final directory = await getApplicationDocumentsDirectory();
+      path = '${directory.path}/grades_export.csv';
+    }
 
+    final file = File(path);
     await file.writeAsString(csvString);
 
+    if (kDebugMode) {
+      print('Grades exported to: $path');
+    }
+
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Grades exported to grades_export.csv'), backgroundColor: Colors.green,),
+      SnackBar(content: Text('Grades exported to $path') ,backgroundColor: Colors.green,),
     );
   }
 
