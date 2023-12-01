@@ -32,6 +32,9 @@ dependencies:
     sdk: flutter
   sqflite:   # SQLite plugin for Flutter
   path:     # A string-based path manipulation library
+  fl_chart: 0.62.0
+  csv:
+  path_provider:
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -54,6 +57,8 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  assets:
+    - lib/test.csv
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

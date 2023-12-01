@@ -53,8 +53,15 @@ class GradesModel {
   // Insert a grade
   Future<int> insertGrade(Grade grade) async {
     final db = await database;
-    return await db!.insert(tableGrades, grade.toMap());
+    final data = {
+      // Do not insert 'id' if it's null, let SQLite auto-generate it
+      if (grade.id != null) 'id': grade.id,
+      'sid': grade.sid,
+      'grade': grade.grade,
+    };
+    return await db!.insert(tableGrades, data);
   }
+
 
   // Update a grade
   Future<int> updateGrade(Grade grade) async {

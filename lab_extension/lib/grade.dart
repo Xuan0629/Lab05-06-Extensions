@@ -1,10 +1,10 @@
 class Grade {
-  int id; // Now non-nullable, it must be provided upon the creation of a Grade instance
+  int? id; // Unique ID
   String sid; // Student ID
   String grade; // Letter grade
 
   // Adjust the constructor since id is now required
-  Grade({required this.id, required this.sid, required this.grade});
+  Grade({this.id, required this.sid, required this.grade});
 
   // Convert a Grade into a Map. The keys must correspond to the names of the columns in the database.
   Map<String, dynamic> toMap() {
