@@ -258,37 +258,41 @@ class _ListGradesState extends State<ListGrades> {
           child: ListView.builder(
               itemCount: testGrades.length,
               itemBuilder: (context, index) {
-                var grade = displayedGrades[index];
-                return Dismissible(
-                  key: Key(grade.id.toString()),
-                  onDismissed: (direction) {
-                    GradesModel.instance.deleteGradeById(grade.id!).then((_) {
-                      _getGrades(); // Refresh the list after deletion
-                    });
-                  },
-                  background: Container(
-                    color: Colors.red,
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: const Text(
-                      'Delete',
-                      style: TextStyle(color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  child: GestureDetector(
-                    onLongPress: () => _editGrade(grade),
-                    onTap: () => _onItemTapped(index),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: _selectedIndex == index ? Colors.blue[100] : null,
-                        ),
-                        child: ListTile(
-                          title: Text(grade.sid),
-                          subtitle: Text(grade.grade),
-                        ),
+                if (index < displayedGrades.length) {
+                  var grade = displayedGrades[index];
+                  return Dismissible(
+                    key: Key(grade.id.toString()),
+                    onDismissed: (direction) {
+                      GradesModel.instance.deleteGradeById(grade.id!).then((_) {
+                        _getGrades(); // Refresh the list after deletion
+                      });
+                    },
+                    background: Container(
+                      color: Colors.red,
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: const Text(
+                        'Delete',
+                        style: TextStyle(color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.bold),
                       ),
                     ),
-                  );
+                    child: GestureDetector(
+                      onLongPress: () => _editGrade(grade),
+                      onTap: () => _onItemTapped(index),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: _selectedIndex == index ? Colors.blue[100] : null,
+                          ),
+                          child: ListTile(
+                            title: Text(grade.sid),
+                            subtitle: Text(grade.grade),
+                          ),
+                        ),
+                      ),
+                    );
+                  } else {
+                    return Container(); // Return an empty container for safety
+                  }
                 },
               ),
             ),
